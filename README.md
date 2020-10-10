@@ -67,8 +67,8 @@ lrwx------ 1 mota mota 64 Sep 29 16:13 6 -> /dev/pts/9
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/proc-self-fd.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/proc-self-fd.gif" alt="example gif" />
 </details>
 
 Bash forks a child process when launching a command and inherits the file descriptors from the parent process.
@@ -85,8 +85,8 @@ $ ps -p $$
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/bash-ps-p.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-ps-p.gif" alt="example gif" />
 </details>
 
 Listing `/proc/$$/fd` will print the the same information as before when using `self` because the it's the same process ID:
@@ -104,8 +104,8 @@ lrwx------ 1 mota mota 64 Sep 27 19:33 6 -> /dev/pts/9
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/proc-psid-fd.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/proc-psid-fd.gif" alt="example gif" />
 </details>
 
 In the above examples, `/dev/pts/9` is referencing the pseudo terminal device. A _pts_ is a pseudo terminal device emulated by another program, such as `xterm`, `tmux`, `ssh`, etc.
@@ -125,8 +125,8 @@ $ tty
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/tty-command.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/tty-command.gif" alt="example gif" />
 </details>
 
 If we we're on a native terminal device (non-pseudo) meaning the backend is hardware or kernel emulated (e.g. the console before launching the desktop environment), then the tty path will look something like `/dev/tty1`.
@@ -145,8 +145,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-proc-self-fd-1.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-1.gif" alt="example gif" />
 </details>
 
 Same thing will occur if writing to the stderr file descriptor:
@@ -157,8 +157,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-proc-self-fd-2.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-2.gif" alt="example gif" />
 </details>
 
 We can read from from the stdin file descriptor and echo the input:
@@ -175,8 +175,8 @@ a b c d
 After running the command and typing text, press `ctrl-d` to stop reading from stdin. The inputed text will be printed.
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-proc-self-fd-0.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-0.gif" alt="example gif" />
 </details>
 
 If you're not familar with the `$(...)` syntax, it allows you to use the result of the command as the the string argument since `$()` evaluates the expression. The `<` is the standard input redirect operator which we'll go over in the redirection section.
@@ -191,8 +191,8 @@ lrwxrwxrwx 1 root root 13 Aug 26 23:14 /dev/fd -> /proc/self/fd
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-dev-fd.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-dev-fd.gif" alt="example gif" />
 </details>
 
 For convenience, the standard streams are symlinked to `/dev/stdin`, `/dev/stdout`, and `/dev/stderr` respectively.
@@ -205,8 +205,8 @@ lrwxrwxrwx 1 root root 15 Aug 26 23:14 /dev/stdout -> /proc/self/fd/1
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-dev-std.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-dev-std.gif" alt="example gif" />
 </details>
 
 These are the same:
@@ -273,8 +273,8 @@ total 0
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-write-stdout.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-write-stdout.gif" alt="example gif" />
 </details>
 
 Append new stdout output of `ls` showing hidden files to same `list.txt` file:
@@ -301,8 +301,8 @@ notes.txt
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-append-stdout.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-append-stdout.gif" alt="example gif" />
 </details>
 
 Search for particular filenames and write errors from stderr to `errors.txt` file:
@@ -318,8 +318,8 @@ ls: cannot access '*.json': No such file or directory
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-write-stderr.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-write-stderr.gif" alt="example gif" />
 </details>
 
 Read `errors.txt` file as input to the `less` command:
@@ -332,8 +332,8 @@ errors.txt (END)
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-stdin.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/less-stdin.gif" alt="example gif" />
 </details>
 
 ### stdin
@@ -375,8 +375,8 @@ hello bob
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/bash-script-stdin-file-reader.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-script-stdin-file-reader.gif" alt="example gif" />
 </details>
 
 
@@ -389,8 +389,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-stdin-file.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-stdin-file.gif" alt="example gif" />
 </details>
 
 ### stdout
@@ -416,8 +416,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-write-stdout.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-write-stdout.gif" alt="example gif" />
 </details>
 
 Trying to write to a file that can't be opened for writing will make the command fail:
@@ -430,8 +430,8 @@ bash: stdout.log: Permission denied
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-write-stdout-error.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-write-stdout-error.gif" alt="example gif" />
 </details>
 
 Sometimes when we aren't interested in the program stdout output, we can redirected to `/dev/null` to silence the output. This device file acts like a black hole for data streams.
@@ -460,8 +460,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-write-stderr-fd.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-write-stderr-fd.gif" alt="example gif" />
 </details>
 
 **Example:** Redirect the standard error messages to a file.
@@ -476,8 +476,8 @@ $ cat out.log
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-error-stdout.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-error-stdout.gif" alt="example gif" />
 </details>
 
 We use `2>` to redirect stderr only:
@@ -489,8 +489,8 @@ ls: cannot access '/foo': No such file or directory
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-error-stderr.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-error-stderr.gif" alt="example gif" />
 </details>
 
 Of course now the following won't write anything to the file because there is no error:
@@ -503,8 +503,8 @@ $ cat out.log
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-no-error-stderr.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-no-error-stderr.gif" alt="example gif" />
 </details>
 
 We can use `2>&1` to redirect stderr to stdout, and then redirect stdout to the file with `>` (or `>>` to append):
@@ -521,8 +521,8 @@ ls: cannot access '/foo': No such file or directory
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-stderr-to-stdout-append.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-append.gif" alt="example gif" />
 </details>
 
 Alternatively, we can redirect stdout to stderr with `1>&2` (or simply `>&2`), and then redirect stderr to the file with `2>` (or `2>>` to append):
@@ -539,8 +539,8 @@ ls: cannot access '/foo': No such file or directory
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-stdout-to-stderr-append.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-stdout-to-stderr-append.gif" alt="example gif" />
 </details>
 
 Since `>` is shorthand for `1>`, we can replace `1>&2` with `>&2` and it'll work the same.
@@ -557,8 +557,8 @@ $ cat out.log
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-stderr-to-stdout-before-redirect.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-before-redirect.gif" alt="example gif" />
 </details>
 
 It didn't write to the file, and the reason is because stderr was made a copy of stdout before stdout was redirected to the file. It's assigning the right operand to the left operand by copy and not by reference.
@@ -583,8 +583,8 @@ ls: cannot access '/foo': No such file or directory
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-stderr-to-stdout-shorthand.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-shorthand.gif" alt="example gif" />
 </details>
 
 ## Pipes
@@ -607,8 +607,8 @@ My_Notes.txt
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-pipe-grep.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-pipe-grep.gif" alt="example gif" />
 </details>
 
 You can chain multiple commands creating a pipeline:
@@ -626,8 +626,8 @@ my_notes.txt
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-pipe-grep-trim.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-pipe-grep-trim.gif" alt="example gif" />
 </details>
 
 Standard errors would
@@ -642,8 +642,8 @@ $ cat out.log
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/ls-error-stdout-write.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-error-stdout-write.gif" alt="example gif" />
 </details>
 
 It's important to note that the commands in pipelines, ie `cmd1 | cmd2 | cmd3`, are all launched in parallel and not ran sequentially. The inputs and outputs are configured appropriately for each program
@@ -670,8 +670,8 @@ yes
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/test-exit-0-and-echo.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/test-exit-0-and-echo.gif" alt="example gif" />
 </details>
 
 If the `test` condition is false then the circuit breaks because the exit code is non-zero and the execution order doesn't reach the echo command:
@@ -682,8 +682,8 @@ $ test 7 -lt 5 && echo "yes"
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/test-exit-1-and-echo.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/test-exit-1-and-echo.gif" alt="example gif" />
 </details>
 
 You can chain as many commands as you need:
@@ -710,8 +710,8 @@ yes
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/test-exit-1-or-echo.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/test-exit-1-or-echo.gif" alt="example gif" />
 </details>
 
 If the `test` condition is true and exit code is 0 then the execution will stop at the OR statement:
@@ -722,8 +722,8 @@ $ test 2 -lt 5 || echo "yes"
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/test-exit-0-or-echo.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/test-exit-0-or-echo.gif" alt="example gif" />
 </details>
 
 ### `;;`
@@ -750,8 +750,8 @@ $ sleep 5 && notify-send "hello world" &
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/sleep-and-notify.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/sleep-and-notify.gif" alt="example gif" />
 </details>
 
 After running a command with `&` you'll see the job ID and process ID returned. Run `jobs` to see the list of running processes launched in the background.
@@ -762,8 +762,8 @@ $ jobs
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/jobs-command.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/jobs-command.gif" alt="example gif" />
 </details>
 
 After the command has completed and exited, the status will change to done:
@@ -788,8 +788,8 @@ sleep 5 && notify-send "hello world"
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/jobs-fg.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/jobs-fg.gif" alt="example gif" />
 </details>
 
 Notice how there's no `&` at the end because the process is no longer running in the background.
@@ -805,8 +805,8 @@ $ ./program.sh &
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-and-notify-in-background.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-and-notify-in-background.gif" alt="example gif" />
 </details>
 
 ## Examples
@@ -829,8 +829,8 @@ echo "this will go to stderr" 1>&2
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-redirect-stdout-to-stderr.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr.gif" alt="example gif" />
 </details>
 
 You can omit the `1` since `>` is the same as `1>`:
@@ -840,8 +840,8 @@ echo "this will go to stderr" >&2
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-redirect-stdout-to-stderr-shorthand.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr-shorthand.gif" alt="example gif" />
 </details>
 
 To make it more readable, the redirect can be moved to the front:
@@ -851,8 +851,8 @@ To make it more readable, the redirect can be moved to the front:
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-redirect-stdout-to-stderr-in-front.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr-in-front.gif" alt="example gif" />
 </details>
 
 ### Diff two commands
@@ -876,8 +876,8 @@ $ diff <(printf "foo\nbar/nqux\n") <(printf "foo\nbaz\nqux\n")
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/diff-two-commands.gif" alt="demo gif" />
+  <summary>example gif</summary>
+  <p><img src="gifs/diff-two-commands.gif" alt="example gif" />
 </details>
 
 ### Record SSH session
@@ -898,8 +898,8 @@ $ cat session.log
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/record-ssh-session.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/record-ssh-session.gif" alt="example gif" /></p>
 </details>
 
 ### Split pipe into multiple streams
@@ -929,8 +929,8 @@ epip siht tilps
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/split-pipe.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/split-pipe.gif" alt="example gif" /></p>
 </details>
 
 **Example 2:** Run command and copy output to clipboard:
@@ -964,8 +964,8 @@ $ echo "this will show up in terminal 1" > /dev/pts/39
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/echo-to-tty.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-to-tty.gif" alt="example gif" /></p>
 </details>
 
 ### Pipe terminal output to another terminal
@@ -992,8 +992,8 @@ $ exec &> >(tee >(cat > /dev/pts/39))
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/tty-output-to-tty.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/tty-output-to-tty.gif" alt="example gif" /></p>
 </details>
 
 Another way is to use the `script` command. The `script` command allows you to record terminal sessions. Here we specify the TTY as the output file:
@@ -1018,8 +1018,8 @@ $ script -q /dev/pts/12 bash
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/tty-output-to-tty-using-script.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/tty-output-to-tty-using-script.gif" alt="example gif" /></p>
 </details>
 
 ### Read pipe into variable
@@ -1038,8 +1038,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/read-pipe-into-variable.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/read-pipe-into-variable.gif" alt="example gif" /></p>
 </details>
 
 ### Pipe to file descriptor
@@ -1077,8 +1077,8 @@ $ cat | reader.sh
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/bash-stdin-reader.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-stdin-reader.gif" alt="example gif" /></p>
 </details>
 
 ### Read command output as line by line in Bash
@@ -1104,8 +1104,8 @@ done < <(tail -n0 -f stream.log)
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/bash-file-reader.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-file-reader.gif" alt="example gif" /></p>
 </details>
 
 Another way of reading command output line by line:
@@ -1127,8 +1127,8 @@ done
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/bash-file-reader-2.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-file-reader-2.gif" alt="example gif" /></p>
 </details>
 
 ### Pipe terminal to another computer's terminal
@@ -1154,8 +1154,8 @@ $ exec 3<>/dev/tcp/127.0.0.1/1337 && exec &> >(tee >(cat >&3))
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/pipe-tty-to-tcp.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/pipe-tty-to-tcp.gif" alt="example gif" /></p>
 </details>
 
 Alternatively, you can use netcat to pipe your terminal:
@@ -1165,8 +1165,8 @@ $ exec &> >(nc 127.0.0.1 1337)
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/pipe-tty-to-tcp-using-netcat.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/pipe-tty-to-tcp-using-netcat.gif" alt="example gif" /></p>
 </details>
 
 ### Redirect the output of multiple commands
@@ -1188,8 +1188,8 @@ error!
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/multiple-commands-redirect-output.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/multiple-commands-redirect-output.gif" alt="example gif" /></p>
 </details>
 
 ### Stream audio
@@ -1207,8 +1207,8 @@ $ curl -s http://ice1.somafm.com/defcon-128-mp3 | mpv -
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/stream-mp3.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/stream-mp3.gif" alt="example gif" /></p>
 </details>
 
 **Example:** Using [afplay](https://ss64.com/osx/afplay.html) player (preinstalled on macOS). Note afplay doesn't support streaming so we create a file descriptor to stream to.
@@ -1230,8 +1230,8 @@ $ youtube-dl -f best -g https://www.youtube.com/watch?v=dQw4w9WgXcQ | xargs -I %
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/youtube-dl-pipe-to-mpv.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/youtube-dl-pipe-to-mpv.gif" alt="example gif" /></p>
 </details>
 
 ### Stream directory contents to remote server
@@ -1263,8 +1263,8 @@ tar cf - . | nc 127.0.0.1 1337
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/stream-directory-contents.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/stream-directory-contents.gif" alt="example gif" /></p>
 </details>
 
 A thing to note is that it'd be very easy to for someone to stream all your home directory contents (SSH keys, AWS credentials, etc) if they're able to run this command on your machine! Only run trusted software and monitor outgoing HTTP requests using something like [OpenSnitch](https://github.com/evilsocket/opensnitch).
@@ -1278,8 +1278,8 @@ while true; do sudo cat /dev/input/mouse0 | read -n1; streamer -q -o cam.jpeg -s
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/mouse-move-webcam-picture.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/mouse-move-webcam-picture.gif" alt="example gif" /></p>
 </details>
 
 ### Group commands with OR
@@ -1299,8 +1299,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/group-commands-with-or.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/group-commands-with-or.gif" alt="example gif" /></p>
 </details>
 
 ### Writing standard input to a file
@@ -1315,8 +1315,8 @@ hello world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/cat-stdin-write.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/cat-stdin-write.gif" alt="example gif" /></p>
 </details>
 
 It's the same thing using the `-` argument in cat to indicate that you want to read from stdin, e.g. `cat - > file.txt`
@@ -1339,8 +1339,8 @@ world
 ```
 
 <details>
-  <summary>demo gif</summary>
-  <p><img src="gifs/cat-with-stdin-between-files.gif" alt="demo gif" /></p>
+  <summary>example gif</summary>
+  <p><img src="gifs/cat-with-stdin-between-files.gif" alt="example gif" /></p>
 </details>
 
 ## Contributing
