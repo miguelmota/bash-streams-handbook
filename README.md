@@ -8,8 +8,6 @@
 [![Mentioned in Awesome Bash](https://awesome.re/mentioned-badge.svg)](https://github.com/awesome-lists/awesome-bash)
 -->
 
-⚠️ This is a work-in-progress
-
 ## Contents
 
 - [Standard streams](#standard-streams)
@@ -68,14 +66,32 @@ lr-x------ 1 mota mota 64 Sep 29 16:13 3 -> /proc/815170/fd/
 lrwx------ 1 mota mota 64 Sep 29 16:13 6 -> /dev/pts/9
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/proc-self-fd.gif" alt="demo gif" />
+</details>
+
 Bash forks a child process when launching a command and inherits the file descriptors from the parent process.
 
-We can use `$$` to get the parent process ID and list `/proc/$$/fd` which will print the the same information as before.
+We can use `$$` to get the parent process ID:
 
 ```bash
 $ echo $$
-3964
+2317356
 
+$ ps -p $$
+    PID TTY          TIME CMD
+2317356 pts/9    00:00:00 bash
+```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/bash-ps-p.gif" alt="demo gif" />
+</details>
+
+Listing `/proc/$$/fd` will print the the same information as before when using `self` because the it's the same process ID:
+
+```bash
 $ ls -la /proc/$$/fd
 total 0
 dr-x------ 2 mota mota  0 Sep 27 19:33 ./
@@ -86,6 +102,11 @@ lrwx------ 1 mota mota 64 Sep 27 19:33 2 -> /dev/pts/9
 lrwx------ 1 mota mota 64 Sep 28 12:20 255 -> /dev/pts/9
 lrwx------ 1 mota mota 64 Sep 27 19:33 6 -> /dev/pts/9
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/proc-psid-fd.gif" alt="demo gif" />
+</details>
 
 In the above examples, `/dev/pts/9` is referencing the pseudo terminal device. A _pts_ is a pseudo terminal device emulated by another program, such as `xterm`, `tmux`, `ssh`, etc.
 
@@ -103,6 +124,11 @@ $ tty
 /dev/pts/11
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/tty-command.gif" alt="demo gif" />
+</details>
+
 If we we're on a native terminal device (non-pseudo) meaning the backend is hardware or kernel emulated (e.g. the console before launching the desktop environment), then the tty path will look something like `/dev/tty1`.
 
 The file descriptor table looks like this, where the standard streams are reading/writing from the TTY.
@@ -118,12 +144,22 @@ $ echo "hello world" > /proc/self/fd/1
 hello world
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-1.gif" alt="demo gif" />
+</details>
+
 Same thing will occur if writing to the stderr file descriptor:
 
 ```bash
 $ echo "hello world" > /proc/self/fd/2
 hello world
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-2.gif" alt="demo gif" />
+</details>
 
 We can read from from the stdin file descriptor and echo the input:
 
@@ -138,7 +174,10 @@ a b c d
 
 After running the command and typing text, press `ctrl-d` to stop reading from stdin. The inputed text will be printed.
 
-gif
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-proc-self-fd-0.gif" alt="demo gif" />
+</details>
 
 If you're not familar with the `$(...)` syntax, it allows you to use the result of the command as the the string argument since `$()` evaluates the expression. The `<` is the standard input redirect operator which we'll go over in the redirection section.
 
@@ -151,6 +190,11 @@ $ ls -l /dev/fd
 lrwxrwxrwx 1 root root 13 Aug 26 23:14 /dev/fd -> /proc/self/fd
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-dev-fd.gif" alt="demo gif" />
+</details>
+
 For convenience, the standard streams are symlinked to `/dev/stdin`, `/dev/stdout`, and `/dev/stderr` respectively.
 
 ```bash
@@ -159,6 +203,11 @@ lrwxrwxrwx 1 root root 15 Aug 26 23:14 /dev/stderr -> /proc/self/fd/2
 lrwxrwxrwx 1 root root 15 Aug 26 23:14 /dev/stdin -> /proc/self/fd/0
 lrwxrwxrwx 1 root root 15 Aug 26 23:14 /dev/stdout -> /proc/self/fd/1
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-dev-std.gif" alt="demo gif" />
+</details>
 
 These are the same:
 
@@ -223,6 +272,11 @@ total 0
 -rw-r--r-- 1 mota mota 0 Sep 30 14:17 notes.txt
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-write-stdout.gif" alt="demo gif" />
+</details>
+
 Append new stdout output of `ls` showing hidden files to same `list.txt` file:
 
 ```bash
@@ -246,6 +300,11 @@ list.txt
 notes.txt
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-append-stdout.gif" alt="demo gif" />
+</details>
+
 Search for particular filenames and write errors from stderr to `errors.txt` file:
 
 ```bash
@@ -258,6 +317,11 @@ $ cat errors.txt
 ls: cannot access '*.json': No such file or directory
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-write-stderr.gif" alt="demo gif" />
+</details>
+
 Read `errors.txt` file as input to the `less` command:
 
 ```bash
@@ -266,6 +330,11 @@ $ less < errors.txt
 ls: cannot access '*.json': No such file or directory
 errors.txt (END)
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-stdin.gif" alt="demo gif" />
+</details>
 
 ### stdin
 
@@ -279,7 +348,7 @@ Data to be sent to program as input is redirected with `<`:
 command < input.txt
 ```
 
-**Example:** Read stdin as input for bash script.:
+**Example:** Read stdin as input for bash script:
 
 `program.sh`:
 
@@ -305,6 +374,12 @@ hello alice
 hello bob
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/bash-script-stdin-file-reader.gif" alt="demo gif" />
+</details>
+
+
 **Example:** For stdin demonstration purposes, you can send file data as input to the echo command by reading the file into a subshell and using the result as the echo arguments:
 
 ```bash
@@ -312,6 +387,11 @@ $ echo "hello world" > file.txt
 $ echo $(< file.txt)
 hello world
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-stdin-file.gif" alt="demo gif" />
+</details>
 
 ### stdout
 
@@ -335,6 +415,11 @@ $ cat stdout.log
 hello world
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-write-stdout.gif" alt="demo gif" />
+</details>
+
 Trying to write to a file that can't be opened for writing will make the command fail:
 
 ```bash
@@ -343,6 +428,11 @@ $ chmod -w stdout.log
 $ echo "hello world" > stdout.log
 bash: stdout.log: Permission denied
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-write-stdout-error.gif" alt="demo gif" />
+</details>
 
 Sometimes when we aren't interested in the program stdout output, we can redirected to `/dev/null` to silence the output. This device file acts like a black hole for data streams.
 
@@ -369,16 +459,26 @@ $ echo "hello world" > /dev/stderr
 hello world
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-write-stderr-fd.gif" alt="demo gif" />
+</details>
+
 **Example:** Redirect the standard error messages to a file.
 
 Redirecting with only `>` captures stdout and not stderr:
 
 ```bash
-$ ls foo > out.log
-ls: cannot access 'foo': No such file or directory
+$ ls /foo > out.log
+ls: cannot access '/foo': No such file or directory
 $ cat out.log
 
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-error-stdout.gif" alt="demo gif" />
+</details>
 
 We use `2>` to redirect stderr only:
 
@@ -388,6 +488,11 @@ $ cat out.log
 ls: cannot access '/foo': No such file or directory
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-error-stderr.gif" alt="demo gif" />
+</details>
+
 Of course now the following won't write anything to the file because there is no error:
 
 ```bash
@@ -396,6 +501,11 @@ mota/
 $ cat out.log
 
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-no-error-stderr.gif" alt="demo gif" />
+</details>
 
 We can use `2>&1` to redirect stderr to stdout, and then redirect stdout to the file with `>` (or `>>` to append):
 
@@ -410,6 +520,11 @@ mota/
 ls: cannot access '/foo': No such file or directory
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-append.gif" alt="demo gif" />
+</details>
+
 Alternatively, we can redirect stdout to stderr with `1>&2` (or simply `>&2`), and then redirect stderr to the file with `2>` (or `2>>` to append):
 
 ```bash
@@ -423,6 +538,11 @@ mota/
 ls: cannot access '/foo': No such file or directory
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-stdout-to-stderr-append.gif" alt="demo gif" />
+</details>
+
 Since `>` is shorthand for `1>`, we can replace `1>&2` with `>&2` and it'll work the same.
 
 **Order is important!**
@@ -435,6 +555,11 @@ ls: cannot access '/foo': No such file or directory
 $ cat out.log
 
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-before-redirect.gif" alt="demo gif" />
+</details>
 
 It didn't write to the file, and the reason is because stderr was made a copy of stdout before stdout was redirected to the file. It's assigning the right operand to the left operand by copy and not by reference.
 
@@ -457,6 +582,11 @@ mota/
 ls: cannot access '/foo': No such file or directory
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-stderr-to-stdout-shorthand.gif" alt="demo gif" />
+</details>
+
 ## Pipes
 
 Using the `|` pipe operator allows you to send the output of one program as input to another program.
@@ -476,6 +606,11 @@ data.txt
 My_Notes.txt
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-pipe-grep.gif" alt="demo gif" />
+</details>
+
 You can chain multiple commands creating a pipeline:
 
 ```bash
@@ -489,6 +624,27 @@ $ ls | grep "\.txt$" | tr '[A-Z]' '[a-z]'
 data.txt
 my_notes.txt
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-pipe-grep-trim.gif" alt="demo gif" />
+</details>
+
+Standard errors would
+
+#### `|&`
+
+```bash
+$ ls /foo > out.log
+ls: cannot access '/foo': No such file or directory
+$ cat out.log
+
+```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/ls-error-stdout-write.gif" alt="demo gif" />
+</details>
 
 It's important to note that the commands in pipelines, ie `cmd1 | cmd2 | cmd3`, are all launched in parallel and not ran sequentially. The inputs and outputs are configured appropriately for each program
 
@@ -513,12 +669,22 @@ $ test 2 -lt 5 && echo "yes"
 yes
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/test-exit-0-and-echo.gif" alt="demo gif" />
+</details>
+
 If the `test` condition is false then the circuit breaks because the exit code is non-zero and the execution order doesn't reach the echo command:
 
 ```bash
 $ test 7 -lt 5 && echo "yes"
 
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/test-exit-1-and-echo.gif" alt="demo gif" />
+</details>
 
 You can chain as many commands as you need:
 
@@ -536,9 +702,33 @@ The OR operator `||` (double pipe) is used for separating commands and only runn
 command1 || command2
 ```
 
+**Example:** Continue if condition is false. The `test` command returns a non-zero exit code if the condition is false.
+
+```bash
+$ test 7 -lt 5 || echo "yes"
+yes
+```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/test-exit-1-or-echo.gif" alt="demo gif" />
+</details>
+
+If the `test` condition is true and exit code is 0 then the execution will stop at the OR statement:
+
+```bash
+$ test 2 -lt 5 || echo "yes"
+
+```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/test-exit-0-or-echo.gif" alt="demo gif" />
+</details>
+
 ### `;;`
 
-  Commands separated by a ; are executed sequentially: one after another.
+Commands separated by a ; are executed sequentially: one after another.
   The shell waits for the finish of each command.
 
      # command2 will be executed after command1
@@ -555,47 +745,69 @@ command &
 **Example:** Run program in background. This command is will be immediately launched in the background and after 5 seconds it will display a desktop notification:
 
 ```bash
-$ sleep 5 && notify-send "hello" &
+$ sleep 5 && notify-send "hello world" &
 [1] 2481042
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/sleep-and-notify.gif" alt="demo gif" />
+</details>
 
 After running a command with `&` you'll see the job ID and process ID returned. Run `jobs` to see the list of running processes launched in the background.
 
 ```bash
 $ jobs
-[1]+  Running                 sleep 5 && notify-send "hello" &
+[1]+  Running                 sleep 5 && notify-send "hello world" &
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/jobs-command.gif" alt="demo gif" />
+</details>
 
 After the command has completed and exited, the status will change to done:
 
 ```bash
 $ jobs
-[1]+  Done                    sleep 5 && notify-send "hello"
+[1]+  Done                    sleep 5 && notify-send "hello world"
 ```
 
 Use the `-l` flag to list the process ID as well:
 
 ```bash
 $ jobs -l
-[1]+ 2481042 Done                 sleep 5 && notify-send "hello"
+[1]+ 2481042 Done                 sleep 5 && notify-send "hello world"
 ```
 
 If the command hasn't completed yet, you can bring to the foreground with the `fg` command:
 
 ```bash
 $ fg 1
-sleep 5 && notify-send "hello"
+sleep 5 && notify-send "hello world"
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/jobs-fg.gif" alt="demo gif" />
+</details>
 
 Notice how there's no `&` at the end because the process is no longer running in the background.
 
 **Example:** Launch bash scripts or executible files in the background:
 
 ```bash
-$ echo 'sleep 5 && notify-send "hello"' > program.sh
+$ cat > program.sh
+sleep 5 && notify-send "hello world"
+^D
 $ chmod +x program.sh
 $ ./program.sh &
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-and-notify-in-background.gif" alt="demo gif" />
+</details>
 
 ## Examples
 
@@ -610,23 +822,38 @@ $ command -v mycommand &>/dev/null || echo "command not found"
 
 ### Echo to stderr
 
-Copy stderr file descriptor #2 to stdout file descriptor #1:
+Copy stderr file descriptor #1 to stdout file descriptor #2:
 
 ```bash
-echo "this will go to stderr" 1>&1
+echo "this will go to stderr" 1>&2
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr.gif" alt="demo gif" />
+</details>
 
 You can omit the `1` since `>` is the same as `1>`:
 
 ```bash
-echo "this will go to stderr" >&1
+echo "this will go to stderr" >&2
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr-shorthand.gif" alt="demo gif" />
+</details>
 
 To make it more readable, the redirect can be moved to the front:
 
 ```bash
 >&2 echo "this will go to stderr"
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/echo-redirect-stdout-to-stderr-in-front.gif" alt="demo gif" />
+</details>
 
 ### Diff two commands
 
@@ -999,8 +1226,13 @@ $ curl -s http://ice1.somafm.com/defcon-128-mp3 | ffplay -nodisp -
 **Example:** Using [`youtube-dl`](https://ytdl-org.github.io/youtube-dl/) to get the m3u8 playlist url for mpv to stream:
 
 ```bash
-$ youtube-dl -f best -g https://www.youtube.com/watch?v=wvJgB_ZyXcI | xargs -I % curl -s % | mpv --no-video -
+$ youtube-dl -f best -g https://www.youtube.com/watch?v=dQw4w9WgXcQ | xargs -I % curl -s % | mpv --no-video -
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/youtube-dl-pipe-to-mpv.gif" alt="demo gif" /></p>
+</details>
 
 ### Stream directory contents to remote server
 
@@ -1082,6 +1314,11 @@ $ cat file.txt
 hello world
 ```
 
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/cat-stdin-write.gif" alt="demo gif" /></p>
+</details>
+
 It's the same thing using the `-` argument in cat to indicate that you want to read from stdin, e.g. `cat - > file.txt`
 
 ### Concatenating files with standard input in between
@@ -1092,14 +1329,19 @@ It's the same thing using the `-` argument in cat to indicate that you want to r
 $ echo "hello" > 1.txt
 $ echo "world" > 3.txt
 $ cat 1.txt - 3.txt > all.txt
-happy
+earth
 ^D
 
 $ cat all.txt
 hello
-happy
+earth
 world
 ```
+
+<details>
+  <summary>demo gif</summary>
+  <p><img src="gifs/cat-with-stdin-between-files.gif" alt="demo gif" /></p>
+</details>
 
 ## Contributing
 
@@ -1109,7 +1351,8 @@ For contributions please create a new branch and submit a pull request for revie
 
 ## Resources
 
-- [Bash manual](https://www.gnu.org/software/bash/manual/html_node/Redirections.html)
+- [GNU Bash Manual - Redirections](https://www.gnu.org/software/bash/manual/html_node/Redirections.html)
+- [Introduction to Linux - I/O redirection](https://linux.die.net/Intro-Linux/chap_05.html)
 
 ## License
 
