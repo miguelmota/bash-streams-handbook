@@ -16,13 +16,15 @@
   - [stderr](#stderr)
 - [Redirection](#redirection)
 - [Pipes](#pipes)
+- [Process Substitution](#process-substitution)
+- [Subshells](#subshells)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Standard streams
 
-A data stream in the context of Bash is a a communication channel between a program and the environment where the command was launched from.
+A data stream in the context of Bash is a communication channel between a program and the environment where the command was launched from.
 
 There are three data [standard streams](https://en.wikipedia.org/wiki/Standard_streams) that are created when a command is launched.
 
@@ -32,7 +34,7 @@ The three streams are:
 - **stdout** - standard output
 - **stderr** - standard error
 
-Futher more:
+Further more:
 
 - The standard input stream accepts text as it's input.
 - The text output from the command is sent to the shell though the standard output stream.
@@ -89,7 +91,7 @@ $ ps -p $$
   <p><img src="gifs/bash-ps-p.gif" alt="example gif" />
 </details>
 
-Listing `/proc/$$/fd` will print the the same information as before when using `self` because the it's the same process ID:
+Listing `/proc/$$/fd` will print the same information as before when using `self` because the `$$` is expanded to the same process ID:
 
 ```bash
 $ ls -la /proc/$$/fd
@@ -809,9 +811,163 @@ $ ./program.sh &
   <p><img src="gifs/echo-and-notify-in-background.gif" alt="example gif" />
 </details>
 
+## Process Substitution
+
+Process substitution allows us to run a program and write to another program as if it were a file. The syntax for process substitution is `>(command)` for writing to the program as an output file or `<(command)` for using the program as an input file.
+
+- `<(command)` - for programs that produce standard output
+- `>(command)` - for programs that intake standard input
+
+The operator `<()` or `>()` creates a temporary file descriptor that manages reading and writing the substituted program.
+
+It's important that theres no space between the `<` or `>` and the parentheses `(` otherwise it would result in an error. Although it looks similar, process substitution is different than command grouping or subshells.
+
+**Example:** Print the file descriptor created by process substitution:
+
+We can use the echo command to view the result of the expansion:
+
+```bash
+$ echo <(date)
+/dev/fd/63
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-process-substitution-date.gif" alt="example gif" />
+</details>
+
+**Example:** Print the contents of the file created by process substitution:
+
+```bash
+$ cat <(date)
+Sat Oct 10 12:56:18 PM PDT 2020
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/cat-process-substitution-date.gif" alt="example gif" />
+</details>
+
+**Example:** command tee stdout to cat
+
+The tee command accepts only files to write to but using process substitution we can write the output to cat. This results in the date command being printed and the cat command printing the date as well.
+
+```bash
+$ date | tee >(cat)
+Sat Oct 10 01:27:15 PM PDT 2020
+Sat Oct 10 01:27:15 PM PDT 2020
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/cat-tee-process-substitution.gif" alt="example gif" />
+</details>
+
+**Example:** send command stderr to substituted file while also logging stdout and stderr:
+
+```bash
+command 2> tee >(cat >&2)
+```
+
+The `>()` operator substitute the tee command as a file and within that process substitution the cat command is substituted as a file so tee can write to it. The `2>` operator sends only stderr to outer substituted file. The operator `>&2` copies stdout to stderr.
+
+If there is no stderr from the command then nothing is sent to the tee substituted file:
+
+```bash
+$ ls /home 2> >(tee >(cat >&2))
+mota/
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-tee-cat-process-substitution.gif" alt="example gif" />
+</details>
+
+If there is stderr from the command then the tee process substitution will process it and log it:
+
+```bash
+$ ls /foo 2> >(tee >(cat >&2))
+ls: cannot access '/foo': No such file or directory
+ls: cannot access '/foo': No such file or directory
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-tee-cat-process-substitution-stderr.gif" alt="example gif" />
+</details>
+
+## Subshells
+
+A subshell executes commands in a child copy of the current shell. The environment is copied to the new instance of the shell when running subshelled commands. The copy of the environment is deleted once the subshell exits so changes, such as environment variables assignments, in the subhsell are lost when it exits. Command grouping is preferred to subshells in most cases because it's faster and uses less memory.
+
+Wrap the command(s) in parentheses `(...)` to launch them in a subshell:
+
+```bash
+$ (command)
+```
+
+**Example:** running a command in a subshell:
+
+Notice how the second environment variable echo is not printed because the variable was set in the subshell environment:
+
+```bash
+$ (FOO=bar; echo $FOO); echo $FOO
+bar
+
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/subshell-environment-variable.gif" alt="example gif" />
+</details>
+
+**Example:** using process substitution to get around subshell caveats:
+
+As an example, the `read` command can be used for caching input. The read input is copied to the `$REPLY` environment variable.
+
+```bash
+$ read
+hello world
+$ echo $REPLY
+hello world
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/read-command.gif" alt="example gif" />
+</details>
+
+However if we pipe a string to the read command, it will not print the string as expected after reading it:
+
+```bash
+$ echo "hello world" | read
+$ echo $REPLY
+
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-pipe-read-command.gif" alt="example gif" />
+</details>
+
+This is because read command is launched in a subshell when it's in a pipeline and the `REPLY` variable copy is lost after it exits. Commands in pipelines are executed in subshell and any variable assignments will not be available after the subshell terminates.
+
+We can use process substitution to get around this problem so a subshell doesn't to be initialized:
+
+```bash
+$ read < <(echo "hello world")
+$ echo $REPLY
+hello world
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/echo-read-process-substitution.gif" alt="example gif" />
+</details>
+
 ## Examples
 
-The following are various examples utilizing bash pipes and redirections:
+The following are various examples utilizing bash pipelines and redirections:
 
 ### Pipe only on stderr
 
@@ -1055,6 +1211,7 @@ $ echo "hello world" | tee /dev/fd/3
 ```
 
 However, the above won't work on all systems. The cross-platform compatible way is to use process substitution:
+
 ```bash
 $ command > >(tee >(cat >&3))
 ```
@@ -1211,19 +1368,19 @@ $ curl -s http://ice1.somafm.com/defcon-128-mp3 | mpv -
   <p><img src="gifs/stream-mp3.gif" alt="example gif" /></p>
 </details>
 
-**Example:** Using [afplay](https://ss64.com/osx/afplay.html) player (preinstalled on macOS). Note afplay doesn't support streaming so we create a file descriptor to stream to.
+**Example:** Using [`afplay`](https://ss64.com/osx/afplay.html) player (preinstalled on macOS). Note `afplay` doesn't support streaming so we create a file descriptor to stream to.
 
 ```bash
 $ exec 3<> /tmp/file.mp3 && curl -s http://ice1.somafm.com/defcon-128-mp3 | tee >&3 | (sleep 1; afplay /tmp/file.mp3)
 ```
 
-**Example:** using [ffplay](https://ffmpeg.org/ffplay.html) player (preinstalled on Fedora):
+**Example:** using [`ffplay`](https://ffmpeg.org/ffplay.html) player (preinstalled on Fedora):
 
 ```bash
 $ curl -s http://ice1.somafm.com/defcon-128-mp3 | ffplay -nodisp -
 ```
 
-**Example:** Using [`youtube-dl`](https://ytdl-org.github.io/youtube-dl/) to get the m3u8 playlist url for mpv to stream:
+**Example:** Using [`youtube-dl`](https://ytdl-org.github.io/youtube-dl/) to get the m3u8 playlist url for `mpv` to stream:
 
 ```bash
 $ youtube-dl -f best -g https://www.youtube.com/watch?v=dQw4w9WgXcQ | xargs -I % curl -s % | mpv --no-video -
@@ -1343,6 +1500,58 @@ world
   <p><img src="gifs/cat-with-stdin-between-files.gif" alt="example gif" /></p>
 </details>
 
+### Filter input for reading with process substitution
+
+In this example, we'll create a program that will intake a filtered output of `ls -l` and print a formatted string.
+
+Print long form of `ls`:
+
+```bash
+$ ls -l
+total 8
+-rw-r--r-- 1 mota mota 2247 Oct 10 19:51 book.pdf
+-rw-r--r-- 1 mota mota  465 Oct 10 19:51 data.txt
+```
+
+Strip out first line:
+
+```bash
+$ ls -l | tail -n+2
+-rw-r--r-- 1 mota mota 2247 Oct 10 19:51 book.pdf
+-rw-r--r-- 1 mota mota  465 Oct 10 19:51 data.txt
+```
+
+Print only the size and filename columns:
+
+```bash
+$ ls -l | tail -n+2 | awk '{print $5 " " $9}'
+2247 book.pdf
+465 data.txt
+```
+
+Now that we know what filter pipeline we'll use, let's create a program that reads line by line the output of the pipeline through process substitution as standard input and prints a formatted string for every line:
+
+`program.sh`
+
+```bash
+while read size filename; do
+  cat << EOF
+$filename is $size bytes
+EOF
+done < <(ls -l | tail -n+2 | awk '{print $5 " " $9}')
+```
+
+```bash
+$ ./program.sh
+book.pdf is 2247 bytes
+data.txt is 465 bytes
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-script-ls-process-substitution.gif" alt="example gif" /></p>
+</details>
+
 ## Contributing
 
 Pull requests are welcome!
@@ -1353,6 +1562,7 @@ For contributions please create a new branch and submit a pull request for revie
 
 - [GNU Bash Manual - Redirections](https://www.gnu.org/software/bash/manual/html_node/Redirections.html)
 - [Introduction to Linux - I/O redirection](https://linux.die.net/Intro-Linux/chap_05.html)
+- [The Linux Command Line](http://linuxcommand.org/tlcl.php)
 
 ## License
 
