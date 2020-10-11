@@ -632,22 +632,6 @@ my_notes.txt
   <p><img src="gifs/ls-pipe-grep-trim.gif" alt="example gif" />
 </details>
 
-Standard errors would
-
-#### `|&`
-
-```bash
-$ ls /foo > out.log
-ls: cannot access '/foo': No such file or directory
-$ cat out.log
-
-```
-
-<details>
-  <summary>example gif</summary>
-  <p><img src="gifs/ls-error-stdout-write.gif" alt="example gif" />
-</details>
-
 It's important to note that the commands in pipelines, ie `cmd1 | cmd2 | cmd3`, are all launched in parallel and not ran sequentially. The inputs and outputs are configured appropriately for each program
 
 For running a series of commands in sequential order then use the following operators:
