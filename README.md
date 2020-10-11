@@ -4,6 +4,7 @@
 
 [![License](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/miguelmota/bash-pipe-handbook/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
+![status-wip](https://img.shields.io/badge/status-work_in_progress-lightgrey.svg)
 <!--
 [![Mentioned in Awesome Bash](https://awesome.re/mentioned-badge.svg)](https://github.com/awesome-lists/awesome-bash)
 -->
@@ -1649,8 +1650,10 @@ For contributions please create a new branch and submit a pull request for revie
 ## Resources
 
 - [GNU Bash Manual - Redirections](https://www.gnu.org/software/bash/manual/html_node/Redirections.html)
+- [Advanced Bash-Scripting Guide: Process Substitution](https://tldp.org/LDP/abs/html/process-sub.html)
 - [Introduction to Linux - I/O redirection](https://linux.die.net/Intro-Linux/chap_05.html)
 - [The Linux Command Line](http://linuxcommand.org/tlcl.php)
+- [Bash Redirection Cheat Sheet](https://catonmat.net/ftp/bash-redirections-cheat-sheet.pdf)
 
 ## License
 
