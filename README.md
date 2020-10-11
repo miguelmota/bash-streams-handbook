@@ -11,11 +11,12 @@
 ## Contents
 
 - [Standard streams](#standard-streams)
-  - [stdin](#stdin)
-  - [stdout](#stdout)
-  - [stderr](#stderr)
+  - [Standard input](#standard-input)
+  - [Standard output](#standard-output)
+  - [Standard error](#standard-error)
 - [Redirection](#redirection)
-- [Pipes](#pipes)
+- [Pipelines](#pipelines)
+- [Command grouping](#command-grouping)
 - [Process Substitution](#process-substitution)
 - [Subshells](#subshells)
 - [Examples](#examples)
@@ -338,7 +339,7 @@ errors.txt (END)
   <p><img src="gifs/less-stdin.gif" alt="example gif" />
 </details>
 
-### stdin
+### Standard input
 
 stdin (standard input) is an input stream where input data is sent to. The program reads the stream data as input for the program. stdin is a file descriptor we can write to. In most cases the standard input is input from the keyboard.
 
@@ -395,7 +396,7 @@ hello world
   <p><img src="gifs/echo-stdin-file.gif" alt="example gif" />
 </details>
 
-### stdout
+### Standard output
 
 stdout (standard output) is an output stream where data is sent to and then outputted by the terminal. stdout is a file descriptor we can write to.
 
@@ -442,7 +443,7 @@ Sometimes when we aren't interested in the program stdout output, we can redirec
 command > /dev/null
 ```
 
-### stderr
+### Standard error
 
 stderr (standard error) is an output stream where error data is sent to and then outputted by the terminal. stderr is a file descriptor we can write to.
 
@@ -589,7 +590,7 @@ ls: cannot access '/foo': No such file or directory
   <p><img src="gifs/ls-stderr-to-stdout-shorthand.gif" alt="example gif" />
 </details>
 
-## Pipes
+## Pipelines
 
 Using the `|` pipe operator allows you to send the output of one program as input to another program.
 
@@ -793,6 +794,109 @@ $ ./program.sh &
 <details>
   <summary>example gif</summary>
   <p><img src="gifs/echo-and-notify-in-background.gif" alt="example gif" />
+</details>
+
+## Command grouping
+
+Commands can be grouped using curly braces `{...}`
+
+```bash
+$ { command; command; command; }
+```
+
+**Important!** there must be a space separating the command and the curly brace and the last command needs to be terminated by a semicolon for the group to be executed correctly.
+
+Another way to group commands is by using a subshell `(...)`.
+
+```bash
+$ (command; command; command)
+```
+
+Grouping with subshells does not require the space separation and last command semicolon as like grouping with curly braces. There are differences in grouping using a subshell and subshells are explained further in the [subshells section](#subshells)
+
+Grouping commands is useful for managing redirection. For example, we can redirect the output of multiple programs to a single location without adding redudant redirects.
+
+For context:
+
+```bash
+$ ls
+data.json  list.txt
+$ cat list.txt
+archive.zip
+book.pdf
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/ls-cat-list.gif" alt="example gif" />
+</details>
+
+We can take file write redirects like these:
+
+```bash
+$ date > out.log
+$ ls >> out.log
+$ cat list.txt >> out.log
+$ cat out.log
+Sat Oct 10 09:35:06 PM PDT 2020
+data.json
+list.txt
+out.log
+archive.zip
+book.pdf
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/multiple-commands-stdout-write.gif" alt="example gif" />
+</details>
+
+Group them to simplify things:
+
+```bash
+$ { date; ls; cat list.txt; } > out.log
+$ cat out.log
+Sat Oct 10 09:35:06 PM PDT 2020
+data.json
+list.txt
+out.log
+archive.zip
+book.pdf
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/command-group-stdout-file.gif" alt="example gif" />
+</details>
+
+A command group can be piped to another command as if it were a single standard input:
+
+```bash
+$ { date; ls; cat list.txt; } | tail -n+2 | sort
+archive.zip
+book.pdf
+data.json
+list.txt
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/command-group-stdout-pipe.gif" alt="example gif" />
+</details>
+
+Similarly, grouping can be done with a subshell:
+
+```bash
+$ (date; ls; cat list.txt) | tail -n+2 | sort
+archive.zip
+book.pdf
+data.json
+list.txt
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/subshell-command-group-stdout-pipe.gif" alt="example gif" />
 </details>
 
 ## Process Substitution
