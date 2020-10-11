@@ -900,6 +900,75 @@ list.txt
   <p><img src="gifs/subshell-command-group-stdout-pipe.gif" alt="example gif" />
 </details>
 
+### pipefail
+
+By default, a bash pipeline's exit status code will be whichever exit code the last command returned, meaning a non-zero exit code is not preserved throughout the pipeline.
+
+**Example:** here we have a program that has a failing pipeline however the exit code is `0`. The last exit code can be read from the variable `$?`.
+
+```bash
+$ cat > program.sh
+ls /foo | tee out.log; echo $?
+echo "done"
+^D
+$ chmod +x program.sh
+$ ./program.sh
+ls: cannot access '/foo': No such file or directory
+0
+done
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-script-pipeline-fail.gif" alt="example gif" />
+</details>
+
+The bash `set` builtin command allows us to configure shell options. One important option is the `set -o pipefail` option which causes the pipeline's exit code to be preserved if a command fails in the pipeline:
+
+```bash
+$ cat > program.sh
+set -o pipefail
+ls /foo | tee out.log; echo $?
+echo "done"
+^D
+$ chmod +x program.sh
+$ ./program.sh
+ls: cannot access '/foo': No such file or directory
+2
+done
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-script-pipefail-option.gif" alt="example gif" />
+</details>
+
+The `ls` man page mentions the following reasons for exit status codes:
+
+- `0` - if OK
+- `1` - if minor problems
+- `2` - if serious trouble
+
+Notice how the last echo command still got executed after the pipeline failed. We can combine the `pipefail` option with the `set -e` (`errexit`) option to immediately exit the script if any command fails:
+
+```bash
+$ cat > program.sh
+set -eo pipefail
+ls /foo | tee out.log; echo $?
+echo "done"
+^D
+$ chmod +x program.sh
+$ ./program.sh
+ls: cannot access '/foo': No such file or directory
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/bash-script-pipefail-errexit-option.gif" alt="example gif" />
+</details>
+
+The program exited immediately after the failing `ls` command and didn't print any commands after it.
+
 ## Process Substitution
 
 Process substitution allows us to run a program and write to another program as if it were a file. The syntax for process substitution is `>(command)` for writing to the program as an output file or `<(command)` for using the program as an input file.
