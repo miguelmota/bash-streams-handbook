@@ -17,6 +17,7 @@
   - [Standard error](#standard-error)
 - [Redirection](#redirection)
 - [Pipelines](#pipelines)
+- [Named pipes](#named-pipes)
 - [Command grouping](#command-grouping)
 - [Process Substitution](#process-substitution)
 - [Subshells](#subshells)
@@ -796,6 +797,55 @@ $ ./program.sh &
   <summary>example gif</summary>
   <p><img src="gifs/echo-and-notify-in-background.gif" alt="example gif" />
 </details>
+
+## Named pipes
+
+The `mkfifo` allows us to create a special type of file, a FIFO file, which can be opened for writing and reading and behave similar to a pipe. These files are referred to as named pipes.
+
+The difference between a FIFO file and a regular file is that the FIFO file must be opened on both ends at the same time to let the program continue with input or output operations. The data is passed internally through the kernel without writing it to the file system (the file size is always 0 bytes). This means reading from the FIFO file will be blocked until it's opened for writing, and writing to it will be blocked will until it's opened for reading.
+
+**Example:** create a named piped for writing and reading
+
+First we create the named pipe with `mkfifo`:
+
+```bash
+$ mkfifo mypipe
+```
+
+Listing the file information shows us that it's a pipe because the file type letter in the attributes is `p`
+
+```bash
+$ ls -l mypipe
+prw-r--r-- 1 mota mota 0 Oct 25 02:14 mypipe
+```
+
+In one terminal, we redirect some standard output to the named pipe:
+
+```bash
+$ echo "hello world" > mypipe
+
+```
+
+Notice how it appears to hang after running the command. The pipe is blocked until another process reads from the pipe.
+
+In another terminal, redirect standard input of the pipe into `cat` to read and print the contents that were sent to the pipe in the first terminal. This also unblocks the pipe since both ends are simultaneously opened.
+
+```bash
+$ cat < mypipe
+hello world
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/mkfifo-echo-cat.gif" alt="example gif" />
+</details>
+
+The FIFO device file is on disk so we have to manually delete it if we're done using it:
+```bash
+$ rm mypipe
+```
+
+Another option is to create FIFO files in `/tmp` which will get automatically wiped after a restart.
 
 ## Command grouping
 
@@ -1658,6 +1708,59 @@ world
   <p><img src="gifs/cat-with-stdin-between-files.gif" alt="example gif" /></p>
 </details>
 
+### Send commands to terminal through a named pipe
+
+**Example:** Set standard input of terminal to FIFO file
+
+In terminal 1, create a FIFO file and replace terminal standard input by using `exec`:
+
+```bash
+$ mkfifo myfifo
+$ exec < myfifo
+```
+
+In terminal 2, write to the FIFO file and see the command being executed in the first terminal. However, the first terminal will close right away. This is because the writer closed the FIFO and the reading process received `EOF`.
+
+```bash
+$ echo "ls -l" > myfifo
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/mkfifo-exec-stdin-echo.gif" alt="example gif" /></p>
+</details>
+
+We can create a file descriptor with an open connection to the FIFO pipe to prevent the terminal from closing when writing commands to it.
+
+In temrinal 1, run `exec` again to replace standard input:
+
+```bash
+$ exec < myfifo
+```
+
+In terminal 2, use `exec` to create a custom file descriptor `3` and redirect the standard output to the named pipe. Now we can echo commands to this file descriptor and the first terminal will execute them and remain opened.
+
+```bash
+$ exec 3> myfifo
+$ echo "ls -l" >&3
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/mkfifo-exec-stdin-file-descriptor-echo.gif" alt="example gif" /></p>
+</details>
+
+Use the FD close operator `{fd}>&-` with `exec` to close the file descriptor opened for writing to the FIFO:
+
+```bash
+$ exec 3>&-
+```
+
+<details>
+  <summary>example gif</summary>
+  <p><img src="gifs/exec-close-file-descriptor.gif" alt="example gif" /></p>
+</details>
+
 ### Filter input for reading with process substitution
 
 In this example, we'll create a program that will intake a filtered output of `ls -l` and print a formatted string.
@@ -1722,6 +1825,7 @@ For contributions please create a new branch and submit a pull request for revie
 - [Advanced Bash-Scripting Guide: Process Substitution](https://tldp.org/LDP/abs/html/process-sub.html)
 - [Introduction to Linux - I/O redirection](https://linux.die.net/Intro-Linux/chap_05.html)
 - [The Linux Command Line](http://linuxcommand.org/tlcl.php)
+- [Bash One-Liners Explained: All about redirections](https://catonmat.net/bash-one-liners-explained-part-three)
 - [Bash Redirection Cheat Sheet](https://catonmat.net/ftp/bash-redirections-cheat-sheet.pdf)
 
 ## License
