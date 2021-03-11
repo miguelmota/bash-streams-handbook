@@ -248,7 +248,7 @@ Common redirects:
 
 For example:
 
-- `command 2>$1 > out.log` - says "point output of FD #2 to FD #1, and ouput FD #1 to out file".
+- `command 2>&1 > out.log` - says "point output of FD #2 to FD #1, and ouput FD #1 to out file".
 
 The reason an ampersand is required is because `command 2>1` would be ambiguous; it wouldn't be clear if it was redirecting to file descriptor `1` or to a filename named `1`, so the `&` is required to explicitly reference it as the file descriptor.
 
@@ -715,7 +715,7 @@ $ test 2 -lt 5 || echo "yes"
   <p><img src="gifs/test-exit-0-or-echo.gif" alt="example gif" />
 </details>
 
-### `;;`
+### `;`
 
 Commands separated by a ; are executed sequentially: one after another.
   The shell waits for the finish of each command.
